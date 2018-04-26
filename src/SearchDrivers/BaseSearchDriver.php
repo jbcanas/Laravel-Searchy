@@ -9,6 +9,8 @@ abstract class BaseSearchDriver implements SearchDriverInterface
 {
     protected $table;
 
+    protected $connection;
+
     protected $columns;
 
     protected $searchFields;
@@ -22,16 +24,18 @@ abstract class BaseSearchDriver implements SearchDriverInterface
     protected $withTrashed;
 
     /**
-     * @param null  $table
+     * @param null $connection
+     * @param null $table
      * @param array $searchFields
      * @param $relevanceFieldName
      * @param array $columns
      *
      * @internal param $relevanceField
      */
-    public function __construct($table = null, $searchFields = [], $relevanceFieldName, $columns = ['*'])
+    public function __construct($connection = null, $table = null, $searchFields = [], $relevanceFieldName, $columns = ['*'])
     {
         $this->searchFields = $searchFields;
+        $this->$connection = $connection;
         $this->table = $table;
         $this->columns = $columns;
         $this->relevanceFieldName = $relevanceFieldName;
@@ -114,7 +118,8 @@ abstract class BaseSearchDriver implements SearchDriverInterface
      */
     protected function run()
     {
-        $this->query = \DB::table($this->table)
+        $this->query = \DB::connection($this->connection)
+            ->table($this->table)
             ->select($this->columns)
             ->addSelect($this->buildSelectQuery($this->searchFields));
 

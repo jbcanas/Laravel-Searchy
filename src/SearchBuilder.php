@@ -30,9 +30,18 @@ class SearchBuilder
      */
     private $config;
 
+    private $connection;
+
     public function __construct(Repository $config)
     {
         $this->config = $config;
+    }
+
+    public function connection($value)
+    {
+        $this->connection = $value;
+
+        return $this;
     }
 
     /**
